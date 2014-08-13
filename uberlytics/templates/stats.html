@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block body %}
+<style type="text/css">
+    .text_stats p {
+        font-size: 24px;
+    }
+    #map-canvas {
+        height: 1000px;
+    }
+</style>
+<div class="text_stats">
+    {% for stat in printable_stats %}
+        {% if stat is string %}
+        <blockquote>
+            <p>{{stat}}</p>
+        </blockquote>
+        {% else %}
+        <blockquote>
+            <p>{{stat[0]}}</p>
+            <footer><a target="_blank" href="https://riders.uber.com/trips/{{stat[1].trip_id}}">More Details</a></footer>
+            <img width=200 src="{{stat[1].map_img_src}}" />
+        </blockquote>
+
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div class="masthead">
+    <h2 class="muted">Uber Heat Map</h2>
+    <hr>
+    <div id="map-canvas"></div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD65XMeQG6QW_0C1UUEGIVGLxTqwkf2-WE&libraries=visualization"></script>
+    <script type="text/javascript">
+      var tripPaths = [
+        {% for p in trip_paths %}
+            [{% for c in p %} new google.maps.LatLng({{c[0]}}, {{c[1]}}), {% endfor %}],
+        {% endfor %}
+      ];
+      var allCoordinates = [];
+      for (var i = 0; i < tripPaths.length; i++) {
+          for (var j = 0; j < tripPaths.length; j++) {
+              allCoordinates.push(tripPaths[i][j]);
+          }
+      }
+      function initialize() {
+          //var pointArray, heatMap;
+          var mapOptions = {
+            center: new google.maps.LatLng(37.7577, -122.4376),
+            zoom: 13
+          };
+          var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+          var pointArray = new google.maps.MVCArray(allCoordinates);
+          var heatMap = new google.maps.visualization.HeatmapLayer({
+              data: pointArray
+          });
+          heatMap.setMap(map);
+          heatMap.set('radius', 30);
+
+          /*
+          for (var i = 0; i < tripPaths.length; i++) {
+              var polyLine = new google.maps.Polyline({
+                  path: tripPaths[i],
+                  geodesc: true,
+                  strokeColor: '#FF0000',
+                  strokeOpacity: 1,
+                  strokeWeight: 2
+              });
+              polyLine.setMap(map);
+              console.log("poly line: ", polyLine);
+          }
+          */
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+{% endblock %}
