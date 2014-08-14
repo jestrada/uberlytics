@@ -1,6 +1,3 @@
-Uberlytics
-==========
-
 # What is Uberlytics?
 A simple little python app that downloads your Uber history and presents useful information back to you.
 # How do I use it?
@@ -24,3 +21,8 @@ To view your Uber data, simply run the flask app in uberlytics by running `pytho
 
 # Feedback
 Please let me know what additional visualizations you'd like to see or any other improvements I can make.
+
+# Example
+![alt](https://raw.githubusercontent.com/jestrada/uberlytics/master/screenshots/UberHeatMap.png)
+
+![alt](https://raw.githubusercontent.com/jestrada/uberlytics/master/screenshots/UberStats.png)
